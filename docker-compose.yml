@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  postfix:
+    image: isaacchau/postfix
+    environment:
+      - PFX_SMTPUSERS=user1:password1
+      - PFX_MYHOSTNAME=smtp.mydomain.com
+      - PFX_DKIMDOMAINS=anotherdomain.com
+    ports:
+      - 465:465
+    volumes:
+      - ./log:/var/log
+      - ./spool:/var/spool/postfix
+      - ./config:/etc/postfix
+
