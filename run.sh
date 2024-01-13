@@ -1,5 +1,8 @@
 #!/bin/bash
-chown -R root:syslog /var/log
+
+echo "Start execute ${0}"
+
+chown -Rv syslog:syslog /var/log
 chmod 2775 /var/log
 
 if [[ ! -f /etc/postfix/.setup_complete ]]
@@ -55,18 +58,12 @@ else
   echo "No SMTP user defined"
 fi
 
+ls -lr /var/log
+
 # Start postfix
 service rsyslog restart
 service opendkim restart
-service postfix restart
-ls -l /var/log
-if [[ -f /var/log/mail.log ]]
-then
-  exec tail -f /var/log/mail.log
-elif [[ -f /var/log/syslog ]]
-then
-  exec tail -f /var/log/syslog
-else
-  sleep 60
-  read
-fi
+chmod o+r /var/log/*
+
+rm -f /var/spool/postfix/pid/master.pid
+exec /usr/sbin/postfix -c /etc/postfix start-fg
