@@ -25,10 +25,13 @@ then
   exit 1
 fi
 
+#postconf maillog_file=/var/log/postfix.log
+#postconf maillog_file_permissions=0644 
+
 #postconf -e smtpd_tls_chain_files=${certdir}/host.pem 
 postconf -e smtpd_tls_cert_file=${certdir}/cert.pem
 postconf -e smtpd_tls_key_file=${certdir}/key.pem
-postconf -M smtps/inet="smtps    inet  n       -       n       -       -       smtpd -o smtpd_tls_wrappermode=yes -o smtpd_sasl_auth_enable=yes"
+postconf -M smtps/inet="smtps    inet  n       -       n       -       -       smtpd -o smtpd_tls_wrappermode=yes -o smtpd_sasl_auth_enable=yes -v"
 
 
 # DKIM
@@ -79,7 +82,3 @@ END
     echo
   fi
 done
-
-
-
-
