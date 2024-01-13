@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:focal
 MAINTAINER Isaac
 
 # Use for:
@@ -27,7 +27,7 @@ VOLUME /etc/postfix
 RUN apt-get update \
 && echo "postfix postfix/mailname string ${PFX_FQDN}"             | debconf-set-selections \
 && echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections \
-&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends postfix sasl2-bin libsasl2-modules opendkim opendkim-tools rsyslog \
+&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends postfix sasl2-bin libsasl2-modules opendkim opendkim-tools systemctl rsyslog \
 && apt clean \
 && gpasswd -a postfix opendkim \
 && cp -pfv /etc/postfix/main.cf /opt/main_cf.tmpl \
@@ -42,9 +42,9 @@ RUN apt-get update \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache ~/.npm /var/log/*
 
 # Debug
-# RUN apt update \
-# && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends net-tools netcat lsof vim-tiny curl bsd-mailx \
-# && apt-get clean && rm -rf /var/lib/apt/lists/* 
+RUN apt update \
+&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends net-tools netcat lsof vim-tiny curl bsd-mailx \
+&& apt-get clean && rm -rf /var/lib/apt/lists/* 
 
 
 EXPOSE 25/tcp 465/tcp
